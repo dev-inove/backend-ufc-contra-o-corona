@@ -8,7 +8,6 @@ class Action extends Model {
         title: Sequelize.STRING,
         subtitle: Sequelize.STRING,
         content: Sequelize.STRING,
-        image: Sequelize.STRING,
       },
       {
         sequelize,
@@ -16,6 +15,10 @@ class Action extends Model {
     );
 
     return this;
+  }
+
+  static associate(models) {
+    this.belongsTo(models.File, { foreignKey: 'image_id', as: 'image' });
   }
 }
 

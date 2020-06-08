@@ -7,7 +7,6 @@ class Need extends Model {
       {
         name: Sequelize.STRING,
         link: Sequelize.STRING,
-        image: Sequelize.STRING,
       },
       {
         sequelize,

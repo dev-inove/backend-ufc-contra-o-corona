@@ -3,8 +3,9 @@ const dbConfig = require('../config/database');
 const User = require('../app/models/User');
 const Action = require('../app/models/Action');
 const Need = require('../app/models/Need');
+const File = require('../app/models/File');
 
-const models = [User, Action, Need];
+const models = [User, Action, Need, File];
 
 class Database {
   constructor() {
