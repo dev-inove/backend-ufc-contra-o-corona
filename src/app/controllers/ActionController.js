@@ -1,5 +1,4 @@
 const Action = require('../models/Action');
-const File = require('../models/File');
 const Yup = require('yup');
 
 class ActionController {
@@ -8,7 +7,7 @@ class ActionController {
       title: Yup.string().required(),
       subtitle: Yup.string().required(),
       content: Yup.string().required(),
-      imageURL: Yup.number().positive().required(),
+      image_url: Yup.string().notRequired(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -36,48 +35,45 @@ class ActionController {
 
   async show(req, res) {
     const { id } = req.params;
+    const action = await Action.findByPk(id);
 
-    try {
-      const action = await Action.findByPk(id);
-
-      return res.json(action);
-    } catch (e) {
+    if (!action) {
       return res.status(400).json({ error: 'Action not founded!' });
     }
+
+    return res.json(action);
   }
 
   async update(req, res) {
     const { id } = req.params;
 
-    const action = await Action.findByPk(id);
+    try {
+      const action = await Action.findByPk(id);
 
-    if (req.body.title) {
-      const { title } = req.body;
+      const update = req.body;
 
-      action.title = title;
+      if (update.title) {
+        action.title = update.title;
+      }
+
+      if (update.subtitle) {
+        action.subtitle = update.subtitle;
+      }
+
+      if (update.content) {
+        action.content = update.content;
+      }
+
+      if (update.image_url) {
+        action.image_url = update.image_url;
+      }
+
+      action.save();
+
+      return res.json(action);
+    } catch (error) {
+      return res.status(400).json({ error: 'Error on updating action!' });
     }
-
-    if (req.body.subtitle) {
-      const { subtitle } = req.body;
-
-      action.subtitle = subtitle;
-    }
-
-    if (req.body.content) {
-      const { content } = req.body;
-
-      action.content = content;
-    }
-
-    if (req.body.imageURL) {
-      const { imageURL } = req.body;
-
-      action.imageURL = imageURL;
-    }
-
-    action.save();
-
-    return res.json(action);
   }
 
   async destroy(req, res) {

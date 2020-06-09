@@ -20,7 +20,7 @@ module.exports = {
         type: Sequelize.BLOB,
         allowNull: false,
       },
-      imageURL: {
+      image_url: {
         type: Sequelize.STRING,
         allowNull: true,
       },

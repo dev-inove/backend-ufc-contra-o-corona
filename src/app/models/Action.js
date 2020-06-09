@@ -7,8 +7,13 @@ class Action extends Model {
       {
         title: Sequelize.STRING,
         subtitle: Sequelize.STRING,
-        content: Sequelize.BLOB,
-        imageURL: Sequelize.STRING,
+        content: {
+          type: Sequelize.BLOB,
+          get() {
+            return this.getDataValue('content').toString('utf8'); // or whatever encoding is right
+          },
+        },
+        image_url: Sequelize.STRING,
       },
       {
         sequelize,
