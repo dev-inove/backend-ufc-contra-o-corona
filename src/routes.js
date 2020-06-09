@@ -19,6 +19,4 @@ routes.get('/actions', ActionController.index);
 routes.put('/actions/:id', ActionController.update);
 routes.delete('/actions/:id', ActionController.destroy);
 
-routes.post('/files', upload.single('file'), FileController.store);
-
 module.exports = routes;

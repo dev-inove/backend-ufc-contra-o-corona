@@ -8,7 +8,7 @@ class ActionController {
       title: Yup.string().required(),
       subtitle: Yup.string().required(),
       content: Yup.string().required(),
-      image_id: Yup.number().positive().required(),
+      imageURL: Yup.number().positive().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -25,9 +25,7 @@ class ActionController {
   }
 
   async index(req, res) {
-    const actions = await Action.findAll({
-      include: [{ model: File, as: 'image' }],
-    });
+    const actions = await Action.findAll();
 
     if (!actions) {
       return res.status(400).json({ error: 'No actions founded' });
@@ -69,6 +67,12 @@ class ActionController {
       const { content } = req.body;
 
       action.content = content;
+    }
+
+    if (req.body.imageURL) {
+      const { imageURL } = req.body;
+
+      action.imageURL = imageURL;
     }
 
     action.save();

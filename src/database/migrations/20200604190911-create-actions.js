@@ -17,8 +17,12 @@ module.exports = {
         allowNull: false,
       },
       content: {
-        type: Sequelize.STRING,
+        type: Sequelize.BLOB,
         allowNull: false,
+      },
+      imageURL: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       created_at: {
         type: Sequelize.DATE,
