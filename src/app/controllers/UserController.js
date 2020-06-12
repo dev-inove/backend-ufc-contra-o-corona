@@ -11,7 +11,7 @@ class UserController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails!' });
+      return res.status(401).json({ error: 'Validation fails!' });
     }
 
     try {
@@ -57,7 +57,7 @@ class UserController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Id not given.' });
+      return res.status(401).json({ error: 'Validation fails!' });
     }
 
     const update = req.body;
