@@ -5,7 +5,10 @@ class Production extends Model {
   static init(sequelize) {
     super.init(
       {
-        name: Sequelize.STRING,
+        title: Sequelize.STRING,
+        subtitle: Sequelize.STRING,
+        production_location: Sequelize.STRING,
+        geral_production_date: Sequelize.DATE,
       },
       {
         sequelize,
@@ -19,6 +22,11 @@ class Production extends Model {
     this.hasMany(models.ProductionData, {
       foreignKey: 'production_id',
       as: 'production',
+    });
+
+    this.belongsTo(models.User, {
+      foreignKey: 'user_id',
+      as: 'user',
     });
   }
 }

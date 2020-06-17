@@ -7,12 +7,23 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      data: {
-        type: Sequelize.STRING,
+      location_id: {
+        type: Sequelize.INTEGER,
+        references: { model: 'distribuition_locations', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
         allowNull: false,
       },
-      value: {
-        type: Sequelize.FLOAT,
+      quantity: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      production_date: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      distribuition_date: {
+        type: Sequelize.DATE,
         allowNull: false,
       },
       production_id: {
@@ -20,7 +31,7 @@ module.exports = {
         references: { model: 'productions', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
-        allowNull: true,
+        allowNull: false,
       },
       created_at: {
         type: Sequelize.DATE,

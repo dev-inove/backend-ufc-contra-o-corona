@@ -6,7 +6,9 @@ class Action extends Model {
     super.init(
       {
         title: Sequelize.STRING,
-        subtitle: Sequelize.STRING,
+        observation: Sequelize.STRING,
+        target_audience: Sequelize.STRING,
+        impact: Sequelize.STRING,
         content: {
           type: Sequelize.BLOB,
           get() {
@@ -14,6 +16,9 @@ class Action extends Model {
           },
         },
         image_url: Sequelize.STRING,
+        started: Sequelize.DATE,
+        ended: Sequelize.DATE,
+        situation: Sequelize.STRING,
       },
       {
         sequelize,
@@ -21,6 +26,13 @@ class Action extends Model {
     );
 
     return this;
+  }
+
+  static associate(models) {
+    this.belongsTo(models.User, {
+      foreignKey: 'user_id',
+      as: 'user',
+    });
   }
 }
 

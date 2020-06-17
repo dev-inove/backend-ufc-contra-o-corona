@@ -1,23 +1,36 @@
 const Production = require('../models/Production');
 const ProductionData = require('../models/ProductionData');
 const Yup = require('yup');
-const Sequelize = require('sequelize');
 
 class ProductionController {
   async store(req, res) {
-    const { name } = req.body;
+    const schema = Yup.object().shape({
+      title: Yup.string().required(),
+      subtitle: Yup.string().required(),
+      production_location: Yup.string().required(),
+      date: Yup.date().required(),
+    });
 
-    if (!name) {
-      return res.status(401).json({ error: 'Name not given' });
+    if (!(await schema.isValid(req.body))) {
+      return res.status(401).json({ error: 'Validation fails.' });
     }
 
-    const production = await Production.create({ name });
+    const { title, subtitle, production_location, date } = req.body;
+
+    const production = await Production.create({
+      title,
+      subtitle,
+      production_location,
+      geral_production_date: date,
+    });
 
     return res.json(production);
   }
 
   async index(req, res) {
-    const productions = await Production.findAll();
+    const productions = await Production.findAll({
+      include: [{ model: User, as: 'user' }],
+    });
 
     if (!productions) {
       return res.status(400).json({ error: 'No productions founded!' });
@@ -34,14 +47,25 @@ class ProductionController {
     }
 
     try {
-      const { name } = await Production.findByPk(id);
+      const { title } = await Production.findByPk(id);
 
       const production_data = await ProductionData.findAll({
+        include: [
+          {
+            model: DistribuitionLocation,
+            as: 'location',
+          },
+        ],
         where: { production_id: id },
-        attributes: ['data', 'value'],
+        attributes: [
+          'location',
+          'quantity',
+          'production_date',
+          'distribuition_date',
+        ],
       });
 
-      return res.json({ name, production_data });
+      return res.json({ title, production_data });
     } catch (error) {
       return res.status(400).json({ error: 'Error on showing production' });
     }

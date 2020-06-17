@@ -7,9 +7,28 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      name: {
+      title: {
         type: Sequelize.STRING,
         allowNull: false,
+      },
+      subtitle: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      production_location: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      geral_production_date: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      user_id: {
+        type: Sequelize.INTEGER,
+        references: { model: 'users', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+        allowNull: true,
       },
       created_at: {
         type: Sequelize.DATE,

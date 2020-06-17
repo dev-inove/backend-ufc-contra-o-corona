@@ -4,34 +4,59 @@ const Yup = require('yup');
 class ProductionDataController {
   async store(req, res) {
     const schema = Yup.object().shape({
-      data: Yup.string().required(),
-      value: Yup.number().positive().required(),
+      production_date: Yup.date().required(),
+      quantity: Yup.number().positive().required(),
       production_id: Yup.number().positive().required(),
+      location_id: Yup.number().positive().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
       return res.status(401).json({ error: 'Validation fails!' });
     }
 
-    const { value, data, production_id } = req.body;
+    try {
+      const {
+        quantity,
+        production_date,
+        production_id,
+        location_id,
+      } = req.body;
 
-    const production_data = await ProductionData.create({
-      value,
-      data,
-      production_id,
-    });
+      const production_data = await ProductionData.create({
+        quantity,
+        production_date,
+        production_id,
+        location_id,
+      });
 
-    return res.json(production_data);
+      return res.json(production_data);
+    } catch (error) {
+      return res
+        .status(400)
+        .json({ error: 'Error on create production data.' });
+    }
   }
 
   async index(req, res) {
-    const production_data = await ProductionData.findAll();
+    const production_data = await ProductionData.findAll({
+      include: [
+        {
+          model: DistribuitionLocation,
+          as: 'distribuition',
+          attributes: ['name'],
+        },
+      ],
+    });
 
     if (!production_data) {
       return res.status(400).json({ error: 'No data founded!' });
     }
 
     return res.json(production_data);
+  }
+
+  async update(req, res) {
+    return res.json({ WIP: true });
   }
 
   async destroy(req, res) {
