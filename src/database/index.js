@@ -7,8 +7,17 @@ const Need = require('../app/models/Need');
 const Production = require('../app/models/Production');
 const ProductionData = require('../app/models/ProductionData');
 const Notification = require('../app/models/Notification');
+const DistribuitionLocation = require('../app/models/DistribuitionLocation');
 
-const models = [User, Action, Need, Notification, ProductionData, Production];
+const models = [
+  User,
+  Action,
+  Need,
+  Notification,
+  ProductionData,
+  Production,
+  DistribuitionLocation,
+];
 
 class Database {
   constructor() {
