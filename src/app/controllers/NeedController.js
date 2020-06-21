@@ -4,9 +4,14 @@ const Yup = require('yup');
 class NeedController {
   async store(req, res) {
     const schema = Yup.object().shape({
-      name: Yup.string().required(),
+      title: Yup.string().required(),
+      subtitle: Yup.string().required(),
+      situation: Yup.string().required(),
       link: Yup.string().required(),
       image_url: Yup.string().notRequired(),
+      quantity: Yup.number().positive().required(),
+      started: Yup.date().required(),
+      ended: Yup.date().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -52,8 +57,16 @@ class NeedController {
 
       const update = req.body;
 
-      if (update.name) {
-        need.name = update.name;
+      if (update.title) {
+        need.title = update.title;
+      }
+
+      if (update.subtitle) {
+        need.subtitle = update.subtitle;
+      }
+
+      if (update.situation) {
+        need.situation = update.situation;
       }
 
       if (update.link) {
@@ -62,6 +75,18 @@ class NeedController {
 
       if (update.image_url) {
         need.image_url = update.image_url;
+      }
+
+      if (update.quantity) {
+        need.quantity = update.quantity;
+      }
+
+      if (update.started) {
+        need.started = update.started;
+      }
+
+      if (update.ended) {
+        need.ended = update.ended;
       }
 
       need.save();

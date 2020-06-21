@@ -7,14 +7,16 @@ class ActionController {
   async store(req, res) {
     const schema = Yup.object().shape({
       title: Yup.string().required(),
-      observation: Yup.string().required(),
-      target_audience: Yup.string().required(),
-      impact: Yup.string().required(),
+      subtitle: Yup.string().required(),
       content: Yup.string().required(),
       image_url: Yup.string().notRequired(),
-      user_id: Yup.number().positive().required(),
+      impact: Yup.string().required(),
       started: Yup.date().required(),
       ended: Yup.date(),
+      target_audience: Yup.string().required(),
+      observation: Yup.string().required(),
+      situation: Yup.string().required(),
+      user_id: Yup.number().positive().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -23,13 +25,14 @@ class ActionController {
 
     const {
       title,
-      observation,
-      target_audience,
-      impact,
+      subtitle,
       content,
       image_url,
-      user_id,
+      impact,
       started,
+      target_audience,
+      observation,
+      user_id,
     } = req.body;
     let situation = 'Não iniciado';
 
@@ -50,14 +53,15 @@ class ActionController {
     try {
       const action = await Action.create({
         title,
-        observation,
-        impact,
-        target_audience,
+        subtitle,
         content,
         image_url,
         user_id,
+        impact,
         started,
         ended,
+        target_audience,
+        observation,
         situation,
       });
 
@@ -106,16 +110,8 @@ class ActionController {
         action.title = update.title;
       }
 
-      if (update.target_audience) {
-        action.target_audience = update.target_audience;
-      }
-
-      if (update.impact) {
-        action.impact = update.impact;
-      }
-
-      if (update.observation) {
-        action.observation = update.observation;
+      if (update.subtitle) {
+        action.subtitle = update.subtitle;
       }
 
       if (update.content) {
@@ -124,6 +120,10 @@ class ActionController {
 
       if (update.image_url) {
         action.image_url = update.image_url;
+      }
+
+      if (update.impact) {
+        action.impact = update.impact;
       }
 
       if (update.title) {
@@ -136,6 +136,14 @@ class ActionController {
 
       if (update.ended) {
         action.ended = update.ended;
+      }
+
+      if (update.target_audience) {
+        action.target_audience = update.target_audience;
+      }
+
+      if (update.observation) {
+        action.observation = update.observation;
       }
 
       if (isBefore(new Date(), action.started)) {

@@ -1,14 +1,19 @@
 const Location = require('../models/Location');
+const Yup = require('yup');
 
 class LocationController {
   async store(req, res) {
-    const { name } = req.body;
-
-    if (!name) {
+    const schema = Yup.object().shape({
+      name: Yup.string().required(),
+      street: Yup.string().required(),
+      city: Yup.string().required(),
+      state: Yup.string().required(),
+    });
+    if (!(await schema.isValid(req.body))) {
       return res.status(401).json({ error: 'Validation fails!' });
     }
 
-    const location = await Location.create({ name });
+    const location = await Location.create(req.body);
 
     return res.json(location);
   }

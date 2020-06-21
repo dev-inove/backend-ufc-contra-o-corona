@@ -6,6 +6,9 @@ class Location extends Model {
     super.init(
       {
         name: Sequelize.STRING,
+        street: Sequelize.STRING,
+        city: Sequelize.STRING,
+        state: Sequelize.STRING,
       },
       {
         sequelize,

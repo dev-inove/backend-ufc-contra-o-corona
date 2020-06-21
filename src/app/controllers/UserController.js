@@ -1,11 +1,13 @@
 const User = require('../models/User');
 const Yup = require('yup');
-const bcrypt = require('bcryptjs');
 
 class UserController {
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
+      fullname: Yup.string().required(),
+      principal_phone: Yup.number().positive().required(),
+      alternative_phone: Yup.number().positive(),
       email: Yup.string().email().required(),
       password: Yup.string().required(),
     });
@@ -52,7 +54,10 @@ class UserController {
 
     const schema = Yup.object().shape({
       name: Yup.string(),
-      email: Yup.string(),
+      fullname: Yup.string(),
+      principal_phone: Yup.number().positive(),
+      alternative_phone: Yup.number().positive(),
+      email: Yup.string().email(),
       password: Yup.string(),
     });
 
@@ -65,12 +70,23 @@ class UserController {
     const user = await User.findByPk(req.params.id);
 
     if (update.password) {
-      update.password = await bcrypt.hash(req.body.password, 8);
       user.password = update.password;
     }
 
     if (update.name) {
       user.name = update.name;
+    }
+
+    if (update.fullname) {
+      user.fullname = update.fullname;
+    }
+
+    if (update.principal_phone) {
+      user.principal_phone = update.principal_phone;
+    }
+
+    if (update.alternative_phone) {
+      user.alternative_phone = update.alternative_phone;
     }
 
     if (update.email) {
@@ -84,7 +100,7 @@ class UserController {
 
   async destroy(req, res) {
     const schema = Yup.object().shape({
-      id: Yup.number().positive().required(),
+      id: Yup.number().positive().positive().required(),
     });
 
     if (!(await schema.isValid(req.params))) {
