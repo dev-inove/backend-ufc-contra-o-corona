@@ -12,21 +12,33 @@ module.exports = {
         unique: true,
         allowNull: false,
       },
-      target_audience: {
+      subtitle: {
         type: Sequelize.STRING,
+        allowNull: false,
+      },
+      content: {
+        type: Sequelize.BLOB,
         allowNull: false,
       },
       impact: {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      started: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      ended: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
+      target_audience: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       observation: {
         type: Sequelize.STRING,
         allowNull: true,
-      },
-      content: {
-        type: Sequelize.BLOB,
-        allowNull: false,
       },
       image_url: {
         type: Sequelize.STRING,
@@ -37,14 +49,6 @@ module.exports = {
         references: { model: 'users', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
-        allowNull: true,
-      },
-      started: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-      ended: {
-        type: Sequelize.DATE,
         allowNull: true,
       },
       situation: {

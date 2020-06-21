@@ -7,8 +7,7 @@ class Production extends Model {
       {
         title: Sequelize.STRING,
         subtitle: Sequelize.STRING,
-        production_location: Sequelize.STRING,
-        geral_production_date: Sequelize.DATE,
+        situation: Sequelize.STRING,
       },
       {
         sequelize,

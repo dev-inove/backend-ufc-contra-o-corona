@@ -15,12 +15,8 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      production_location: {
+      situation: {
         type: Sequelize.STRING,
-        allowNull: false,
-      },
-      geral_production_date: {
-        type: Sequelize.DATE,
         allowNull: false,
       },
       user_id: {

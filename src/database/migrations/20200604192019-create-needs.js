@@ -7,7 +7,15 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      name: {
+      title: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      subtitle: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      situation: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -17,6 +25,32 @@ module.exports = {
       },
       image_url: {
         type: Sequelize.STRING,
+        allowNull: true,
+      },
+      location_id: {
+        type: Sequelize.INTEGER,
+        references: { model: 'distribuition_locations', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+        allowNull: false,
+      },
+      quantity: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      started: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      ended: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
+      user_id: {
+        type: Sequelize.INTEGER,
+        references: { model: 'users', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
         allowNull: true,
       },
       created_at: {

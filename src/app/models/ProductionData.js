@@ -23,7 +23,7 @@ class ProductionData extends Model {
       as: 'production',
     });
 
-    this.belongsTo(models.DistribuitionLocation, {
+    this.belongsTo(models.Location, {
       foreignKey: 'location_id',
       as: 'location',
     });

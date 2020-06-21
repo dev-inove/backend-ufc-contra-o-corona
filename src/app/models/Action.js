@@ -6,9 +6,7 @@ class Action extends Model {
     super.init(
       {
         title: Sequelize.STRING,
-        observation: Sequelize.STRING,
-        target_audience: Sequelize.STRING,
-        impact: Sequelize.STRING,
+        subtitle: Sequelize.STRING,
         content: {
           type: Sequelize.BLOB,
           get() {
@@ -16,8 +14,11 @@ class Action extends Model {
           },
         },
         image_url: Sequelize.STRING,
+        impact: Sequelize.STRING,
         started: Sequelize.DATE,
         ended: Sequelize.DATE,
+        target_audience: Sequelize.STRING,
+        observation: Sequelize.STRING,
         situation: Sequelize.STRING,
       },
       {

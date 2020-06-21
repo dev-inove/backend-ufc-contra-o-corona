@@ -1,6 +1,6 @@
-const DistribuitionLocation = require('../models/DistribuitionLocation');
+const Location = require('../models/Location');
 
-class DistribuitionLocationController {
+class LocationController {
   async store(req, res) {
     const { name } = req.body;
 
@@ -8,13 +8,13 @@ class DistribuitionLocationController {
       return res.status(401).json({ error: 'Validation fails!' });
     }
 
-    const dist_location = await DistribuitionLocation.create({ name });
+    const location = await Location.create({ name });
 
-    return res.json(dist_location);
+    return res.json(location);
   }
 
   async index(req, res) {
-    const locations = await DistribuitionLocation.findAll();
+    const locations = await Location.findAll();
 
     return res.json(locations);
   }
@@ -23,9 +23,9 @@ class DistribuitionLocationController {
     const { id } = req.params;
 
     try {
-      const dist_location = await DistribuitionLocation.findByPk(id);
+      const location = await Location.findByPk(id);
 
-      dist_location.destroy();
+      location.destroy();
 
       return res.json({
         success: 'Location successfuly deleted!',
@@ -36,4 +36,4 @@ class DistribuitionLocationController {
   }
 }
 
-module.exports = new DistribuitionLocationController();
+module.exports = new LocationController();

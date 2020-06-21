@@ -7,21 +7,21 @@ class ProductionController {
     const schema = Yup.object().shape({
       title: Yup.string().required(),
       subtitle: Yup.string().required(),
-      production_location: Yup.string().required(),
-      date: Yup.date().required(),
+      situation: Yup.string().required(),
+      user_id: Yup.number().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
       return res.status(401).json({ error: 'Validation fails.' });
     }
 
-    const { title, subtitle, production_location, date } = req.body;
+    const { title, subtitle, situation, user_id } = req.body;
 
     const production = await Production.create({
       title,
       subtitle,
-      production_location,
-      geral_production_date: date,
+      situation,
+      user_id,
     });
 
     return res.json(production);
@@ -37,6 +37,44 @@ class ProductionController {
     }
 
     return res.json(productions);
+  }
+
+  async update(req, res) {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(401).json({ error: 'Id not given!' });
+    }
+
+    const schema = Yup.object().shape({
+      title: Yup.string(),
+      subtitle: Yup.string(),
+      situation: Yup.string(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(401).json({ error: 'Validation fails.' });
+    }
+
+    const production = await Production.findByPk(id);
+
+    const { title, subtitle, situation } = req.body;
+
+    if (title) {
+      production.title = title;
+    }
+
+    if (subtitle) {
+      production.subtitle = subtitle;
+    }
+
+    if (situation) {
+      production.situation = situation;
+    }
+
+    production.save();
+
+    return res.json(production);
   }
 
   async show(req, res) {
