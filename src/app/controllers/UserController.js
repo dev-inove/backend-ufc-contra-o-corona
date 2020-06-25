@@ -4,10 +4,7 @@ const Yup = require('yup');
 class UserController {
   async store(req, res) {
     const schema = Yup.object().shape({
-      name: Yup.string().required(),
       fullname: Yup.string().required(),
-      principal_phone: Yup.number().positive().required(),
-      alternative_phone: Yup.number().positive(),
       email: Yup.string().email().required(),
       password: Yup.string().required(),
     });
@@ -17,9 +14,9 @@ class UserController {
     }
 
     try {
-      const { id, name, email } = await User.create(req.body);
+      const { id, fullname, email } = await User.create(req.body);
 
-      return res.json({ id, name, email });
+      return res.json({ id, fullname, email });
     } catch (e) {
       return res.status(400).json({ error: 'Error registering user!' });
     }
@@ -40,9 +37,19 @@ class UserController {
       return res.status(400).json({ error: "User doesn't exists!" });
     }
 
-    const { name, email } = user;
+    const { fullname, email } = user;
 
-    return res.json({ name, email });
+    return res.json({ fullname, email });
+  }
+
+  async index(req, res) {
+    const users = await User.findAll({ attributes: ['fullname', 'email'] });
+
+    if (!users) {
+      return res.status(400).json({ error: 'No users founded' });
+    }
+
+    return res.json(users);
   }
 
   async update(req, res) {
@@ -53,10 +60,7 @@ class UserController {
     }
 
     const schema = Yup.object().shape({
-      name: Yup.string(),
       fullname: Yup.string(),
-      principal_phone: Yup.number().positive(),
-      alternative_phone: Yup.number().positive(),
       email: Yup.string().email(),
       password: Yup.string(),
     });
@@ -73,20 +77,8 @@ class UserController {
       user.password = update.password;
     }
 
-    if (update.name) {
-      user.name = update.name;
-    }
-
     if (update.fullname) {
       user.fullname = update.fullname;
-    }
-
-    if (update.principal_phone) {
-      user.principal_phone = update.principal_phone;
-    }
-
-    if (update.alternative_phone) {
-      user.alternative_phone = update.alternative_phone;
     }
 
     if (update.email) {

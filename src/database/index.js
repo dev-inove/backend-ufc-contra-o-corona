@@ -3,21 +3,8 @@ const dbConfig = require('../config/database');
 
 const User = require('../app/models/User');
 const Action = require('../app/models/Action');
-const Need = require('../app/models/Need');
-const Production = require('../app/models/Production');
-const ProductionData = require('../app/models/ProductionData');
-const Notification = require('../app/models/Notification');
-const Location = require('../app/models/Location');
 
-const models = [
-  User,
-  Action,
-  Need,
-  Notification,
-  ProductionData,
-  Production,
-  Location,
-];
+const models = [User, Action];
 
 class Database {
   constructor() {

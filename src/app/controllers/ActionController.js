@@ -1,7 +1,6 @@
 const Action = require('../models/Action');
 const User = require('../models/User');
 const Yup = require('yup');
-const { isAfter, parseISO, isBefore } = require('date-fns');
 
 class ActionController {
   async store(req, res) {
@@ -9,46 +8,16 @@ class ActionController {
       title: Yup.string().required(),
       subtitle: Yup.string().required(),
       content: Yup.string().required(),
-      image_url: Yup.string().notRequired(),
-      impact: Yup.string().required(),
-      started: Yup.date().required(),
-      ended: Yup.date(),
-      target_audience: Yup.string().required(),
-      observation: Yup.string().required(),
-      situation: Yup.string().required(),
-      user_id: Yup.number().positive().required(),
+      image_url: Yup.string().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
       return res.status(401).json({ error: 'Validation fails!' });
     }
 
-    const {
-      title,
-      subtitle,
-      content,
-      image_url,
-      impact,
-      started,
-      target_audience,
-      observation,
-      user_id,
-    } = req.body;
-    let situation = 'Não iniciado';
+    const user_id = req.userId;
 
-    if (isAfter(new Date(), parseISO(started))) {
-      situation = 'Em andamento';
-    }
-
-    let ended = '';
-
-    if (req.body.ended) {
-      ended = req.body.ended;
-
-      if (isAfter(new Date(), parseISO(ended))) {
-        situation = 'Concluída';
-      }
-    }
+    const { title, subtitle, content, image_url } = req.body;
 
     try {
       const action = await Action.create({
@@ -57,25 +26,17 @@ class ActionController {
         content,
         image_url,
         user_id,
-        impact,
-        started,
-        ended,
-        target_audience,
-        observation,
-        situation,
       });
 
       return res.json(action);
     } catch (error) {
       return res.status(400).json({ error: 'Error on create action!' });
     }
-
-    return res.json({ started, ended, situation });
   }
 
   async index(req, res) {
     const actions = await Action.findAll({
-      include: [{ model: User, as: 'user', attributes: ['name'] }],
+      include: [{ model: User, as: 'user', attributes: ['fullname'] }],
     });
 
     if (!actions) {
@@ -88,7 +49,7 @@ class ActionController {
   async show(req, res) {
     const { id } = req.params;
     const action = await Action.findByPk(id, {
-      include: [{ model: User, as: 'user', attributes: ['name'] }],
+      include: [{ model: User, as: 'user', attributes: ['fullname'] }],
     });
 
     if (!action) {
@@ -120,42 +81,6 @@ class ActionController {
 
       if (update.image_url) {
         action.image_url = update.image_url;
-      }
-
-      if (update.impact) {
-        action.impact = update.impact;
-      }
-
-      if (update.title) {
-        action.title = update.title;
-      }
-
-      if (update.started) {
-        action.started = update.started;
-      }
-
-      if (update.ended) {
-        action.ended = update.ended;
-      }
-
-      if (update.target_audience) {
-        action.target_audience = update.target_audience;
-      }
-
-      if (update.observation) {
-        action.observation = update.observation;
-      }
-
-      if (isBefore(new Date(), action.started)) {
-        action.situation = 'Não iniciada';
-      }
-
-      if (isAfter(new Date(), action.started)) {
-        action.situation = 'Em andamento';
-      }
-
-      if (isAfter(new Date(), action.ended)) {
-        action.situation = 'Concluída';
       }
 
       action.save();
