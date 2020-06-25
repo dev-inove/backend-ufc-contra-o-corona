@@ -10,6 +10,10 @@ const routes = new Router();
 
 routes.post('/sessions', SessionController.store);
 
+routes.get('/', (req, res) => {
+  return res.send('hello');
+});
+
 routes.post('/users', UserController.store);
 
 routes.get('/actions/:id', ActionController.show);
