@@ -36,6 +36,7 @@ class ActionController {
 
   async index(req, res) {
     const actions = await Action.findAll({
+      attributes: ['title', 'subtitle', 'image_url'],
       include: [{ model: User, as: 'user', attributes: ['fullname'] }],
     });
 
