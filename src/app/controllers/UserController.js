@@ -1,10 +1,11 @@
 const User = require('../models/User');
 const Yup = require('yup');
+const bcrypt = require('bcryptjs');
 
 class UserController {
   async store(req, res) {
     const schema = Yup.object().shape({
-      fullname: Yup.string().required(),
+      fullName: Yup.string().required(),
       email: Yup.string().email().required(),
       password: Yup.string().required(),
     });
@@ -12,11 +13,22 @@ class UserController {
     if (!(await schema.isValid(req.body))) {
       return res.status(401).json({ error: 'Validation fails!' });
     }
+    const { fullName, email, password } = req.body;
+
+    const exists = await User.findOne({ email });
+
+    if (exists) {
+      return res.status(400).json({ message: 'User alredy exists' });
+    }
 
     try {
-      const { id, fullname, email } = await User.create(req.body);
-
-      return res.json({ id, fullname, email });
+      const password_hash = await bcrypt.hash(password, 9);
+      const user = await User.create({ fullName, email, password_hash });
+      await user.save();
+      const { createdAt, updatedAt, _id } = user;
+      return res.json({
+        user: { fullName, email, createdAt, updatedAt, _id },
+      });
     } catch (e) {
       return res.status(400).json({ error: 'Error registering user!' });
     }
@@ -37,13 +49,13 @@ class UserController {
       return res.status(400).json({ error: "User doesn't exists!" });
     }
 
-    const { fullname, email } = user;
+    const { fullName, email } = user;
 
-    return res.json({ fullname, email });
+    return res.json({ fullName, email });
   }
 
   async index(req, res) {
-    const users = await User.findAll({ attributes: ['fullname', 'email'] });
+    const users = await User.findAll({ attributes: ['fullName', 'email'] });
 
     if (!users) {
       return res.status(400).json({ error: 'No users founded' });
@@ -60,7 +72,7 @@ class UserController {
     }
 
     const schema = Yup.object().shape({
-      fullname: Yup.string(),
+      fullName: Yup.string(),
       email: Yup.string().email(),
       password: Yup.string(),
     });
@@ -77,8 +89,8 @@ class UserController {
       user.password = update.password;
     }
 
-    if (update.fullname) {
-      user.fullname = update.fullname;
+    if (update.fullName) {
+      user.fullName = update.fullName;
     }
 
     if (update.email) {

@@ -16,11 +16,10 @@ routes.get('/', (req, res) => {
   return res.send('hello');
 });
 
-routes.post('/users', UserController.store);
-
 routes.get('/actions/:id', ActionController.show);
 routes.get('/actions', ActionController.index);
 
+routes.post('/users', UserController.store);
 // routes.use(authMiddleware);
 
 routes.get('/users', UserController.index);
