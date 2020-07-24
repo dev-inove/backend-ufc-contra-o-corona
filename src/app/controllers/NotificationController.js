@@ -15,7 +15,7 @@ class NotificationController {
 
     try {
       const notification = await Notification.create(req.body);
-
+      await notification.save();
       return res.json(notification);
     } catch (error) {
       return res.status(400).json({ error: 'Error on create notification!' });
