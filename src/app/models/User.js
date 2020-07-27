@@ -4,8 +4,16 @@ const uniqueValidator = require('mongoose-unique-validator');
 const UserSchema = new mongoose.Schema(
   {
     fullName: { type: String, required: true },
-    email: { type: String, required: true },
+    nick: { type: String, required: false },
     password_hash: { type: String, required: true },
+
+    email: { type: String, required: true },
+    principalPhone: { type: String, required: false },
+    alternativePhone: { type: String, required: false },
+
+    typeOfBond: { type: String, required: false },
+    institution: { type: String, required: false },
+    institutionCity: { type: String, required: false },
   },
   {
     timestamps: true,
