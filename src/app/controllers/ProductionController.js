@@ -2,6 +2,7 @@ const Production = require('../models/Production');
 const User = require('../models/User');
 const ProductionData = require('../models/ProductionData');
 const Yup = require('yup');
+const { id } = require('date-fns/locale');
 
 class ProductionController {
   async store(req, res) {
@@ -109,6 +110,26 @@ class ProductionController {
 
     try {
       const production = await Production.findOne({ title });
+
+      if (!production)
+        return res.status(400).json({ message: 'this production dont exists' });
+
+      const list = production.listOfProductions;
+
+      for (let index = 0; index < list.length; index++) {
+        const id = list[index];
+        const productionData = await ProductionData.findOne({ _id: id });
+        console.log(productionData.quantity);
+        await productionData.remove();
+      }
+
+      // for () {
+      //   console.log(value);
+
+      //   const productionData = await ProductionData.findOne({ _id: id });
+      //   console.log(productionData.quantity);
+      //   await productionData.remove();
+      // }
 
       await production.remove();
 

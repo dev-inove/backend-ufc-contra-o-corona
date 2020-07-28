@@ -6,6 +6,8 @@ const UserController = require('./app/controllers/UserController');
 const ActionController = require('./app/controllers/ActionController');
 const SessionController = require('./app/controllers/SessionController');
 const ProductionController = require('./app/controllers/ProductionController');
+const ProductionDataController = require('./app/controllers/ProductionDataController');
+
 const NotificationController = require('./app/controllers/NotificationController');
 
 const routes = new Router();
@@ -40,5 +42,10 @@ routes.get('/productions', ProductionController.index);
 routes.get('/production', ProductionController.show);
 routes.put('/productions', ProductionController.update);
 routes.delete('/productions', ProductionController.destroy);
+
+routes.post('/production_data', ProductionDataController.store);
+routes.get('/production_data/:id', ProductionDataController.index);
+routes.put('/production_data/:id', ProductionDataController.update);
+routes.delete('/production_data/:id', ProductionDataController.destroy);
 
 module.exports = routes;

@@ -3,10 +3,10 @@ const uniqueValidator = require('mongoose-unique-validator');
 
 const UserSchema = new mongoose.Schema(
   {
-    // location: {
-    //   type: mongoose.Types.ObjectId,
-    //   ref: 'Location',
-    // },
+    productionId: {
+      type: mongoose.Types.ObjectId,
+      ref: 'Production',
+    },
     location: { type: String, required: true },
     quantity: { type: Number, required: true },
     productionDate: { type: Date, required: true },
