@@ -17,17 +17,23 @@ class ProductionController {
       return res.status(401).json({ error: 'Validation fails.' });
     }
 
-    const { responsible } = req.body;
-    const exists = await User.findOne({ _id: responsible }, '_id');
+    const { responsible, title } = req.body;
+    const existsResponsible = await User.findOne({ _id: responsible }, '_id');
 
-    if (!exists) {
+    if (!existsResponsible) {
       return res.status(400).json({ message: "User don't exists" });
     }
+
+    const existsTitle = await Production.findOne({ title });
+
+    if (existsTitle) {
+      return res.status(400).json({ message: 'Production already exists' });
+    }
+
     try {
       const production = await Production.create(req.body);
       await production.save();
-      req.ProdID = production._id;
-      return res.json({ id: req.ProdID });
+      return res.json({ id: production._id });
     } catch (error) {
       return res.status(400).json({ message: `Error on create ${title}` });
     }
