@@ -1,4 +1,5 @@
 const Production = require('../models/Production');
+const User = require('../models/User');
 const ProductionData = require('../models/ProductionData');
 const Yup = require('yup');
 
@@ -7,30 +8,33 @@ class ProductionController {
     const schema = Yup.object().shape({
       title: Yup.string().required(),
       subtitle: Yup.string().required(),
+      responsible: Yup.string().required(),
       situation: Yup.string().required(),
-      user_id: Yup.number().required(),
+      listOfProductions: Yup.array().of(Yup.string()),
     });
 
     if (!(await schema.isValid(req.body))) {
       return res.status(401).json({ error: 'Validation fails.' });
     }
 
-    const { title, subtitle, situation, user_id } = req.body;
+    const { responsible } = req.body;
+    const exists = await User.findOne({ _id: responsible }, '_id');
 
-    const production = await Production.create({
-      title,
-      subtitle,
-      situation,
-      user_id,
-    });
-
-    return res.json(production);
+    if (!exists) {
+      return res.status(400).json({ message: "User don't exists" });
+    }
+    try {
+      const production = await Production.create(req.body);
+      await production.save();
+      req.ProdID = production._id;
+      return res.json({ id: req.ProdID });
+    } catch (error) {
+      return res.status(400).json({ message: `Error on create ${title}` });
+    }
   }
 
   async index(req, res) {
-    const productions = await Production.findAll({
-      include: [{ model: User, as: 'user' }],
-    });
+    const productions = await Production.find();
 
     if (!productions) {
       return res.status(400).json({ error: 'No productions founded!' });
@@ -40,15 +44,10 @@ class ProductionController {
   }
 
   async update(req, res) {
-    const { id } = req.params;
-
-    if (!id) {
-      return res.status(401).json({ error: 'Id not given!' });
-    }
-
     const schema = Yup.object().shape({
       title: Yup.string(),
       subtitle: Yup.string(),
+      responsible: Yup.string(),
       situation: Yup.string(),
     });
 
@@ -56,70 +55,56 @@ class ProductionController {
       return res.status(401).json({ error: 'Validation fails.' });
     }
 
-    const production = await Production.findByPk(id);
+    const titleQuery = req.query.title;
 
-    const { title, subtitle, situation } = req.body;
-
-    if (title) {
-      production.title = title;
-    }
-
-    if (subtitle) {
-      production.subtitle = subtitle;
-    }
-
-    if (situation) {
-      production.situation = situation;
-    }
-
-    production.save();
-
-    return res.json(production);
-  }
-
-  async show(req, res) {
-    const { id } = req.params;
-
-    if (!id) {
-      return res.status(401).json({ error: 'Id not given.' });
+    if (!titleQuery) {
+      return res.status(401).json({ error: 'Title not given!' });
     }
 
     try {
-      const { title } = await Production.findByPk(id);
+      const production = await Production.findOne({ title: titleQuery });
+      if (!production) {
+        return res.status(400).json({ error: 'No production founded!' });
+      }
 
-      const production_data = await ProductionData.findAll({
-        include: [
-          {
-            model: DistribuitionLocation,
-            as: 'location',
-          },
-        ],
-        where: { production_id: id },
-        attributes: [
-          'location',
-          'quantity',
-          'production_date',
-          'distribuition_date',
-        ],
-      });
+      production.set(req.body);
+      await production.save();
+      return res.json(production);
+    } catch (error) {
+      return res.status(400).json({ message: `Error on create ${title}` });
+    }
+  }
 
-      return res.json({ title, production_data });
+  async show(req, res) {
+    const { title } = req.query;
+
+    if (!title) {
+      return res.status(401).json({ error: 'title not given.' });
+    }
+
+    try {
+      const production = await Production.findOne({ title });
+      if (!production)
+        return res.json({ message: "This Production don't exits" });
+      // missing the acoplation with prodData
+
+      return res.json({ Production: production });
     } catch (error) {
       return res.status(400).json({ error: 'Error on showing production' });
     }
   }
 
   async destroy(req, res) {
-    const { id } = req.params;
+    const { title } = req.query;
 
-    if (!id) {
-      return res.status(401).json({ error: 'Id not given.' });
+    if (!title) {
+      return res.status(401).json({ error: 'title not given.' });
     }
 
     try {
-      const production = await Production.findByPk(id);
+      const production = await Production.findOne({ title });
 
-      production.destroy();
+      await production.remove();
 
       return res.json({ success: 'Production successful deleted!' });
     } catch (error) {

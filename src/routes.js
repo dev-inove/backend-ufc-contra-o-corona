@@ -5,7 +5,7 @@ const authMiddleware = require('./app/middlewares/auth');
 const UserController = require('./app/controllers/UserController');
 const ActionController = require('./app/controllers/ActionController');
 const SessionController = require('./app/controllers/SessionController');
-
+const ProductionController = require('./app/controllers/ProductionController');
 const NotificationController = require('./app/controllers/NotificationController');
 
 const routes = new Router();
@@ -30,9 +30,15 @@ routes.put('/users/:id', UserController.update);
 routes.delete('/users/:id', UserController.destroy);
 
 routes.post('/actions', ActionController.store);
-routes.put('/actions/:id', ActionController.update);
-routes.delete('/actions/:id', ActionController.destroy);
+// routes.put('/actions/:id', ActionController.update);
+// routes.delete('/actions/:id', ActionController.destroy);
 
 routes.post('/notifications', NotificationController.store);
+
+routes.post('/productions', ProductionController.store);
+routes.get('/productions', ProductionController.index);
+routes.get('/production', ProductionController.show);
+routes.put('/productions', ProductionController.update);
+routes.delete('/productions', ProductionController.destroy);
 
 module.exports = routes;

@@ -28,7 +28,7 @@ UserSchema.plugin(uniqueValidator, {
   message: 'Error, expected {PATH} to be unique.',
 });
 
-module.exports = mongoose.model('Action', UserSchema);
+module.exports = mongoose.model('Production', UserSchema);
 
 // const Sequelize = require('sequelize');
 // const { Model } = Sequelize;

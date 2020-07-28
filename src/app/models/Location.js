@@ -18,6 +18,8 @@ UserSchema.plugin(uniqueValidator, {
   message: 'Error, expected {PATH} to be unique.',
 });
 
+module.exports = mongoose.model('Location', UserSchema);
+
 // const Sequelize = require('sequelize');
 // const { Model } = Sequelize;
 
