@@ -16,8 +16,10 @@ routes.get('/', (req, res) => {
   return res.send('hello');
 });
 
-routes.get('/actions/:id', ActionController.show);
+routes.get('/action', ActionController.show);
 routes.get('/actions', ActionController.index);
+routes.put('/actions', ActionController.update);
+routes.delete('/actions', ActionController.destroy);
 
 routes.post('/users', UserController.store);
 // routes.use(authMiddleware);

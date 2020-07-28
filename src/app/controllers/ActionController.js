@@ -5,28 +5,66 @@ const Yup = require('yup');
 class ActionController {
   async store(req, res) {
     const schema = Yup.object().shape({
+      urlImg: Yup.string().required(),
+      responsible_id: Yup.string(),
+      situation: Yup.string().required(),
+
+      initialDate: Yup.string().required(),
+      finalDate: Yup.string().required(),
+      audience: Yup.string().required(),
+
       title: Yup.string().required(),
       subtitle: Yup.string().required(),
       content: Yup.string().required(),
-      image_url: Yup.string().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
       return res.status(401).json({ error: 'Validation fails!' });
     }
 
-    const user_id = req.userId;
+    const responsible = req.body.responsible_id || req.userId;
 
-    const { title, subtitle, content, image_url } = req.body;
+    const exists = await User.findOne({ _id: responsible });
+
+    if (!exists)
+      return res
+        .status(400)
+        .json({ message: "User don't exists, try a valid _id" });
+
+    const {
+      title,
+      subtitle,
+      content,
+      urlImg,
+      situation,
+      observation,
+      initialDate,
+      finalDate,
+      audience,
+    } = req.body;
+
+    const existsTitle = await Action.findOne({ title });
+
+    if (existsTitle)
+      return res
+        .status(400)
+        .json({ message: 'Title already exists, try other title' });
 
     try {
       const action = await Action.create({
+        urlImg,
+        responsible,
+        situation,
+        observation,
+        initialDate,
+        finalDate,
+        audience,
         title,
         subtitle,
         content,
-        image_url,
-        user_id,
       });
+
+      await action.save();
 
       return res.json(action);
     } catch (error) {
@@ -35,60 +73,58 @@ class ActionController {
   }
 
   async index(req, res) {
-    const actions = await Action.findAll({
-      attributes: [
-        'id',
-        'title',
-        'subtitle',
-        'image_url',
-        'created_at',
-        'updated_at',
-      ],
-      include: [{ model: User, as: 'user', attributes: ['fullname'] }],
-    });
-
+    const actions = await Action.find();
     if (!actions) {
       return res.status(400).json({ error: 'No actions founded' });
     }
 
-    return res.json(actions);
+    return res.status(200).json({ actions });
   }
 
   async show(req, res) {
-    const { id } = req.params;
-    const action = await Action.findByPk(id, {
-      include: [{ model: User, as: 'user', attributes: ['fullname'] }],
-    });
+    const { title } = req.query;
+    const action = await Action.findOne({ title: { $eq: title } });
 
     if (!action) {
       return res.status(400).json({ error: 'Action not founded!' });
     }
 
-    return res.json(action);
+    return res.json({ action });
   }
 
   async update(req, res) {
-    const { id } = req.params;
+    const schema = Yup.object().shape({
+      urlImg: Yup.string(),
+      responsible_id: Yup.string(),
+      situation: Yup.string(),
+
+      initialDate: Yup.string(),
+      finalDate: Yup.string(),
+      audience: Yup.string(),
+
+      title: Yup.string(),
+      subtitle: Yup.string(),
+      content: Yup.string(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(401).json({ error: 'Validation fails!' });
+    }
 
     try {
-      const action = await Action.findByPk(id);
-
-      const update = req.body;
-
-      if (update.title) {
-        action.title = update.title;
+      const action = await Action.findOne({ title: req.query.title });
+      if (!action) {
+        return res
+          .status(400)
+          .json({ message: "Action don't exists, try a valid title" });
       }
+      action.set(req.body);
+      const responsible = req.body.responsible_id;
 
-      if (update.subtitle) {
-        action.subtitle = update.subtitle;
-      }
+      const exists = await User.findOne({ _id: responsible });
 
-      if (update.content) {
-        action.content = update.content;
-      }
-
-      if (update.image_url) {
-        action.image_url = update.image_url;
+      if (exists) {
+        action.set('responsible', responsible);
       }
 
       action.save();
@@ -100,12 +136,15 @@ class ActionController {
   }
 
   async destroy(req, res) {
-    const { id } = req.params;
+    const { title } = req.query;
 
+    if (!title) {
+      return res.status(400).json({ error: 'Validation fails!' });
+    }
     try {
-      const action = await Action.findByPk(id);
+      const action = await Action.findOne({ title });
 
-      action.destroy();
+      action.remove();
 
       return res.json({ success: 'Action successfuly deleted!' });
     } catch (e) {
