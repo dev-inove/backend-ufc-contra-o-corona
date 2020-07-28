@@ -91,11 +91,40 @@ class ProductionController {
 
     try {
       const production = await Production.findOne({ title });
+
       if (!production)
         return res.json({ message: "This Production don't exits" });
-      // missing the acoplation with prodData
 
-      return res.json({ Production: production });
+      const list = production.listOfProductions;
+      const listOfProductionsData = [];
+      if (list.length !== 0) {
+        for (let index = 0; index < list.length; index++) {
+          const id = list[index];
+          const productionData = await ProductionData.findOne({ _id: id });
+          listOfProductionsData.push(productionData);
+        }
+      }
+
+      const {
+        _id,
+        subtitle,
+        responsible,
+        situation,
+        createdAt,
+        updatedAt,
+      } = production;
+
+      const newProduction = {
+        _id,
+        title,
+        subtitle,
+        responsible,
+        situation,
+        listOfProductionsData,
+        createdAt,
+        updatedAt,
+      };
+      return res.json({ Production: newProduction });
     } catch (error) {
       return res.status(400).json({ error: 'Error on showing production' });
     }
@@ -114,22 +143,15 @@ class ProductionController {
       if (!production)
         return res.status(400).json({ message: 'this production dont exists' });
 
+      //Do this with map using Promisse or not change
       const list = production.listOfProductions;
 
       for (let index = 0; index < list.length; index++) {
         const id = list[index];
         const productionData = await ProductionData.findOne({ _id: id });
-        console.log(productionData.quantity);
+
         await productionData.remove();
       }
-
-      // for () {
-      //   console.log(value);
-
-      //   const productionData = await ProductionData.findOne({ _id: id });
-      //   console.log(productionData.quantity);
-      //   await productionData.remove();
-      // }
 
       await production.remove();
 
