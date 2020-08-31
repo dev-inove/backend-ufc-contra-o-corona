@@ -6,16 +6,17 @@ class ActionController {
   async store(req, res) {
     const schema = Yup.object().shape({
       urlImg: Yup.string().required(),
-      responsible_id: Yup.string(),
-      situation: Yup.string().required(),
+      category_ref: Yup.string().required(),
+      fullName: Yup.string().required(),
+      institution: Yup.string().required(),
+      email: Yup.string().required(),
 
-      initialDate: Yup.string().required(),
-      finalDate: Yup.string().required(),
-      audience: Yup.string().required(),
+      initialDate: Yup.date().required(),
+      finalDate: Yup.date().required(),
 
       title: Yup.string().required(),
       subtitle: Yup.string().required(),
-      content: Yup.string().required(),
+      description: Yup.string().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -32,15 +33,16 @@ class ActionController {
         .json({ message: "User don't exists, try a valid _id" });
 
     const {
-      title,
-      subtitle,
-      content,
       urlImg,
-      situation,
-      observation,
+      category_ref,
+      fullName,
+      institution,
+      email,
       initialDate,
       finalDate,
-      audience,
+      title,
+      subtitle,
+      description,
     } = req.body;
 
     const existsTitle = await Action.findOne({ title });
@@ -53,15 +55,15 @@ class ActionController {
     try {
       const action = await Action.create({
         urlImg,
-        responsible,
-        situation,
-        observation,
+        category_ref,
+        fullName,
+        institution,
+        email,
         initialDate,
         finalDate,
-        audience,
         title,
         subtitle,
-        content,
+        description,
       });
 
       await action.save();
@@ -95,16 +97,17 @@ class ActionController {
   async update(req, res) {
     const schema = Yup.object().shape({
       urlImg: Yup.string(),
-      responsible_id: Yup.string(),
-      situation: Yup.string(),
+      category_ref: Yup.string(),
+      fullName: Yup.string(),
+      institution: Yup.string(),
+      email: Yup.string(),
 
-      initialDate: Yup.string(),
-      finalDate: Yup.string(),
-      audience: Yup.string(),
+      initialDate: Yup.date(),
+      finalDate: Yup.date(),
 
       title: Yup.string(),
       subtitle: Yup.string(),
-      content: Yup.string(),
+      description: Yup.string(),
     });
 
     if (!(await schema.isValid(req.body))) {
