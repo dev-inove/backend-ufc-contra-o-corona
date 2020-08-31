@@ -3,26 +3,7 @@ const uniqueValidator = require('mongoose-unique-validator');
 
 const UserSchema = new mongoose.Schema(
   {
-    // responsible: {
-    //   type: mongoose.Types.ObjectId,
-    //   ref: 'User',
-    // },
-    urlImg: { type: String, required: true },
-    category_ref: {
-      type: mongoose.Types.ObjectId,
-      ref: 'Category',
-    },
-    fullName: { type: String, required: true },
-    institution: { type: String, required: true },
-    email: { type: String, required: true },
-
-    initialDate: { type: Date, required: true },
-    finalDate: { type: Date, required: true },
-
-    title: { type: String, required: true, unique: true },
-    subtitle: { type: String, required: true },
-    description: { type: String, required: true },
-
+    name: { type: String, required: true, unique: true },
     // read: { type: Boolean, required: true },
   },
   {
@@ -34,7 +15,7 @@ UserSchema.plugin(uniqueValidator, {
   message: 'Error, expected {PATH} to be unique.',
 });
 
-module.exports = mongoose.model('Action', UserSchema);
+module.exports = mongoose.model('Category', UserSchema);
 
 // const Sequelize = require('sequelize');
 // const { Model } = Sequelize;
