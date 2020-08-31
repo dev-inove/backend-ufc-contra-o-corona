@@ -7,7 +7,7 @@ class Database {
 
   init() {
     try {
-      mongoose.connect(process.env.LOCAL_MONGO, {
+      mongoose.connect(process.env.DEV_CONNECTION, {
         useCreateIndex: true,
         useNewUrlParser: true,
         useFindAndModify: true,
