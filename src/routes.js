@@ -13,21 +13,20 @@ routes.post('/sessions', SessionController.store);
 routes.get('/', (req, res) => {
   return res.send('Root');
 });
+routes.post('/users', UserController.store);
+// routes.use(authMiddleware);
 
+routes.post('/actions', ActionController.store);
 routes.get('/action', ActionController.show);
 routes.get('/actions', ActionController.index);
 routes.put('/actions', ActionController.update);
 routes.delete('/actions', ActionController.destroy);
-
-routes.post('/users', UserController.store);
-// routes.use(authMiddleware);
 
 routes.get('/users', UserController.index);
 routes.get('/users/:id', UserController.show);
 routes.put('/users/:id', UserController.update);
 routes.delete('/users/:id', UserController.destroy);
 
-routes.post('/actions', ActionController.store);
 // routes.put('/actions/:id', ActionController.update);
 // routes.delete('/actions/:id', ActionController.destroy);
 

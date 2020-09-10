@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema(
     //   type: mongoose.Types.ObjectId,
     //   ref: 'User',
     // },
-    urlImg: { type: String, required: true },
+    urlImg: { type: String },
     category_ref: {
       type: mongoose.Types.ObjectId,
       ref: 'Category',

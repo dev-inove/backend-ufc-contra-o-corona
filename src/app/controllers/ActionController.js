@@ -5,8 +5,8 @@ const Yup = require('yup');
 class ActionController {
   async store(req, res) {
     const schema = Yup.object().shape({
-      urlImg: Yup.string().required(),
-      category_ref: Yup.string().required(),
+      urlImg: Yup.string(),
+      category_ref: Yup.string(),
       fullName: Yup.string().required(),
       institution: Yup.string().required(),
       email: Yup.string().required(),
@@ -23,23 +23,16 @@ class ActionController {
       return res.status(401).json({ error: 'Validation fails!' });
     }
 
-    const responsible = req.body.responsible_id || req.userId;
-
-    const exists = await User.findOne({ _id: responsible });
-
-    if (!exists)
-      return res
-        .status(400)
-        .json({ message: "User don't exists, try a valid _id" });
-
     const {
       urlImg,
       category_ref,
       fullName,
       institution,
       email,
+
       initialDate,
       finalDate,
+
       title,
       subtitle,
       description,
@@ -59,8 +52,10 @@ class ActionController {
         fullName,
         institution,
         email,
+
         initialDate,
         finalDate,
+
         title,
         subtitle,
         description,
