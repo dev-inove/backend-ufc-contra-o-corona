@@ -14,7 +14,7 @@ routes.get('/', (req, res) => {
   return res.send('Root');
 });
 routes.post('/users', UserController.store);
-// routes.use(authMiddleware);
+routes.use(authMiddleware);
 
 routes.post('/actions', ActionController.store);
 routes.get('/action', ActionController.show);

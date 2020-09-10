@@ -80,7 +80,8 @@ class ActionController {
 
   async show(req, res) {
     const { title } = req.query;
-    const action = await Action.findOne({ title: { $eq: title } });
+    const titleRefactored = title.replace(/_/gi, ' ');
+    const action = await Action.findOne({ title: { $eq: titleRefactored } });
 
     if (!action) {
       return res.status(400).json({ error: 'Action not founded!' });
@@ -108,39 +109,28 @@ class ActionController {
     if (!(await schema.isValid(req.body))) {
       return res.status(401).json({ error: 'Validation fails!' });
     }
+    const { title } = req.query;
+    const titleRefactored = title.replace(/_/gi, ' ');
 
-    try {
-      const action = await Action.findOne({ title: req.query.title });
-      if (!action) {
-        return res
-          .status(400)
-          .json({ message: "Action don't exists, try a valid title" });
-      }
-      action.set(req.body);
-      const responsible = req.body.responsible_id;
+    const action = Action.findOne({ title: titleRefactored });
 
-      const exists = await User.findOne({ _id: responsible });
-
-      if (exists) {
-        action.set('responsible', responsible);
-      }
-
-      action.save();
-
-      return res.json(action);
-    } catch (error) {
-      return res.status(400).json({ error: 'Error on updating action!' });
+    if (!action) {
+      return res.status(400).json({ message: 'Action not found' });
     }
+    action.set(req.body);
+    await action.updateOne();
+    return res.json({ message: 'Success' });
   }
 
   async destroy(req, res) {
     const { title } = req.query;
+    const titleRefactored = title.replace(/_/gi, ' ');
 
     if (!title) {
       return res.status(400).json({ error: 'Validation fails!' });
     }
     try {
-      const action = await Action.findOne({ title });
+      const action = await Action.findOne({ title: titleRefactored });
 
       action.remove();
 
