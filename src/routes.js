@@ -4,6 +4,8 @@ const authMiddleware = require('./app/middlewares/auth');
 
 const UserController = require('./app/controllers/UserController');
 const ActionController = require('./app/controllers/ActionController');
+const CategoryController = require('./app/controllers/CategoryController');
+
 const SessionController = require('./app/controllers/SessionController');
 
 const routes = new Router();
@@ -21,6 +23,8 @@ routes.get('/action', ActionController.show);
 routes.get('/actions', ActionController.index);
 routes.put('/actions', ActionController.update);
 routes.delete('/actions', ActionController.destroy);
+
+routes.post('/category', CategoryController.store);
 
 routes.get('/users', UserController.index);
 routes.get('/users/:id', UserController.show);
