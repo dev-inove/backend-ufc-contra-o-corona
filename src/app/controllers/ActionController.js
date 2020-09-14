@@ -80,6 +80,7 @@ class ActionController {
 
   async show(req, res) {
     const { title } = req.query;
+    if (!title) return res.status(400).json({ message: 'Title not provided' });
     const titleRefactored = title.replace(/_/gi, ' ');
     const action = await Action.findOne({ title: { $eq: titleRefactored } });
 
@@ -110,6 +111,7 @@ class ActionController {
       return res.status(401).json({ error: 'Validation fails!' });
     }
     const { title } = req.query;
+    if (!title) return res.status(400).json({ message: 'Title not provided' });
     const titleRefactored = title.replace(/_/gi, ' ');
 
     const action = Action.findOne({ title: titleRefactored });
@@ -124,6 +126,7 @@ class ActionController {
 
   async destroy(req, res) {
     const { title } = req.query;
+    if (!title) return res.status(400).json({ message: 'Title not provided' });
     const titleRefactored = title.replace(/_/gi, ' ');
 
     if (!title) {
