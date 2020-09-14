@@ -26,6 +26,20 @@ class CategoryController {
 
     return res.status(400).json({ merrage: 'Category alredy exists' });
   }
+
+  async show(req, res) {
+    const { name } = req.query;
+    if (!name) return res.status(400).json({ message: 'Title not provided' });
+    const titleRefactored = name.replace(/_/gi, ' ');
+
+    const category = await Category.findOne({ name: titleRefactored });
+
+    if (!category) {
+      return res.status(403).json({ message: 'Category not found' });
+    }
+
+    return res.status(200).json(category);
+  }
 }
 
 module.exports = new CategoryController();
