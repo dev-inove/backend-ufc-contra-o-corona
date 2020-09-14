@@ -40,6 +40,15 @@ class CategoryController {
 
     return res.status(200).json(category);
   }
+
+  async index(req, res) {
+    const categories = await Category.find();
+    if (!categories) {
+      return res.status(400).json({ error: 'No categories founded' });
+    }
+
+    return res.status(200).json({ categories });
+  }
 }
 
 module.exports = new CategoryController();
