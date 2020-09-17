@@ -27,7 +27,8 @@ routes.delete('/actions', ActionController.destroy);
 routes.post('/category', CategoryController.store);
 routes.get('/category', CategoryController.show);
 routes.get('/categories', CategoryController.index);
-routes.put('/category/update', CategoryController.update);
+routes.put('/category', CategoryController.update);
+routes.delete('/category', CategoryController.destroy);
 
 routes.get('/users', UserController.index);
 routes.get('/users/:id', UserController.show);

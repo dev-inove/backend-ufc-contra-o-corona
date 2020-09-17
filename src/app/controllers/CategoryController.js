@@ -79,9 +79,25 @@ class CategoryController {
     }
 
     category.set({ name: newName });
-    category.save();
+    await category.save();
 
     return res.status(200).json({ message: 'Name updated', category });
+  }
+
+  async destroy(req, res) {
+    const { name } = req.query;
+    if (!name) return res.status(400).json({ message: 'Title not provided' });
+    const titleRefactored = name.replace(/_/gi, ' ');
+
+    const category = await Category.findOne({ name: titleRefactored });
+
+    if (!category) {
+      return res.status(403).json({ message: 'Category not found' });
+    }
+
+    await category.remove();
+
+    return res.status(204).json({ message: 'success' });
   }
 }
 
