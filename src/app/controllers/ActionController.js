@@ -1,12 +1,12 @@
 const Action = require('../models/Action');
-const User = require('../models/User');
+const Category = require('../models/Category');
 const Yup = require('yup');
 
 class ActionController {
   async store(req, res) {
     const schema = Yup.object().shape({
       urlImg: Yup.string(),
-      category_ref: Yup.string(),
+      category: Yup.string(),
       fullName: Yup.string().required(),
       institution: Yup.string().required(),
       email: Yup.string().required(),
@@ -25,7 +25,7 @@ class ActionController {
 
     const {
       urlImg,
-      category_ref,
+      category,
       fullName,
       institution,
       email,
@@ -44,6 +44,14 @@ class ActionController {
       return res
         .status(400)
         .json({ message: 'Title already exists, try other title' });
+
+    const existCategory = await Category.findOne({ name: category });
+
+    if (!existCategory) {
+      return res.status(400).json({ message: 'Wrong Category, try again' });
+    }
+
+    const category_ref = existCategory._id;
 
     try {
       const action = await Action.create({
@@ -114,14 +122,28 @@ class ActionController {
     if (!title) return res.status(400).json({ message: 'Title not provided' });
     const titleRefactored = title.replace(/_/gi, ' ');
 
-    const action = Action.findOne({ title: titleRefactored });
+    try {
+      const action = Action.findOne({ title: titleRefactored });
 
-    if (!action) {
-      return res.status(400).json({ message: 'Action not found' });
+      if (!action) {
+        return res.status(400).json({ message: 'Action not found' });
+      }
+
+      const { category_ref } = req.body;
+      const existCategory = await Category.findById({ _id: category_ref });
+
+      if (!existCategory) {
+        return res
+          .status(403)
+          .json({ message: 'Category not found, try gain' });
+      }
+
+      action.set(req.body);
+      await action.updateOne();
+      return res.json({ message: 'Success' });
+    } catch (error) {
+      return res.status(400).json({ message: 'Update fails' });
     }
-    action.set(req.body);
-    await action.updateOne();
-    return res.json({ message: 'Success' });
   }
 
   async destroy(req, res) {
