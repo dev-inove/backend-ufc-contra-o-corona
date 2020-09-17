@@ -49,6 +49,40 @@ class CategoryController {
 
     return res.status(200).json({ categories });
   }
+
+  async update(req, res) {
+    const schema = Yup.object().shape({
+      name: Yup.string().required(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(401).json({ error: 'Validation fails!' });
+    }
+
+    const { name } = req.query;
+    if (!name) return res.status(400).json({ message: 'Title not provided' });
+    const titleRefactored = name.replace(/_/gi, ' ');
+
+    const category = await Category.findOne({ name: titleRefactored });
+
+    if (!category) {
+      return res.status(403).json({ message: 'Category not found' });
+    }
+
+    const newName = req.body.name;
+    const exists = await Category.findOne({ name: newName });
+
+    if (exists) {
+      return res
+        .status(400)
+        .json({ message: 'Name alredy exists, try another name' });
+    }
+
+    category.set({ name: newName });
+    category.save();
+
+    return res.status(200).json({ message: 'Name updated', category });
+  }
 }
 
 module.exports = new CategoryController();
