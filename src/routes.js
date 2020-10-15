@@ -5,7 +5,7 @@ const authMiddleware = require('./app/middlewares/auth');
 const UserController = require('./app/controllers/UserController');
 const ActionController = require('./app/controllers/ActionController');
 const CategoryController = require('./app/controllers/CategoryController');
-const FilterController = require('./app/controllers/FilterController')
+const FilterController = require('./app/controllers/FilterController');
 const SessionController = require('./app/controllers/SessionController');
 
 const routes = new Router();
@@ -16,10 +16,10 @@ routes.get('/', (req, res) => {
   return res.send('Root');
 });
 routes.post('/users', UserController.store);
-routes.post('/action/filter', FilterController.show)
+routes.post('/action/filter', FilterController.show);
 
 // -----------------------------------------------------------
-routes.use(authMiddleware);
+// routes.use(authMiddleware);
 
 routes.post('/actions', ActionController.store);
 routes.get('/action', ActionController.show);

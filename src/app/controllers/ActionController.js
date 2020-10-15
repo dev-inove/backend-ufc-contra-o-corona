@@ -90,7 +90,9 @@ class ActionController {
     const { title } = req.query;
     if (!title) return res.status(400).json({ message: 'Title not provided' });
     const titleRefactored = title.replace(/_/gi, ' ');
-    const action = await Action.findOne({ title: { $eq: titleRefactored } });
+    const action = await Action.find({
+      title: { $regex: `${titleRefactored}`, $options: 'i' },
+    });
 
     if (!action) {
       return res.status(400).json({ error: 'Action not founded!' });
