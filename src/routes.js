@@ -8,7 +8,13 @@ const CategoryController = require('./app/controllers/CategoryController');
 const FilterController = require('./app/controllers/FilterController');
 const SessionController = require('./app/controllers/SessionController');
 
+const multer = require('multer');
+const { upload } = require('./config/fileupload');
+// const upload = multer(uploadConfig.upload);
+
 const routes = new Router();
+
+routes.post('/actions2', upload.single('file'), ActionController.store);
 
 routes.post('/sessions', SessionController.store);
 
