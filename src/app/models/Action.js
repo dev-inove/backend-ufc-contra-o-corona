@@ -16,8 +16,8 @@ const UserSchema = new mongoose.Schema(
     institution: { type: String, required: true },
     email: { type: String, required: true },
 
-    initialDate: { type: Date, required: true },
-    finalDate: { type: Date, required: true },
+    initialDate: { type: Date },
+    finalDate: { type: Date },
 
     title: { type: String, required: true, unique: true },
     subtitle: { type: String, required: true },
