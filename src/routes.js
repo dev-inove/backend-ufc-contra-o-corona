@@ -27,7 +27,7 @@ routes.post('/action/filter', FilterController.show);
 // -----------------------------------------------------------
 // routes.use(authMiddleware);
 
-routes.post('/actions', ActionController.store);
+routes.post('/actions', upload.single('file'), ActionController.store);
 routes.get('/action', ActionController.show);
 routes.get('/actions', ActionController.index);
 routes.put('/actions', ActionController.update);

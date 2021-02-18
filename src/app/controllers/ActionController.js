@@ -17,14 +17,17 @@ class ActionController {
       title: Yup.string().required(),
       subtitle: Yup.string().required(),
       description: Yup.string().required(),
+      result: Yup.string(),
     });
 
     if (!(await schema.isValid(req.body))) {
       return res.status(401).json({ error: 'Validation fails!' });
     }
 
+    const { filename } = req.file;
+
+    const urlImg = filename;
     const {
-      urlImg,
       category,
       fullName,
       institution,
@@ -36,6 +39,7 @@ class ActionController {
       title,
       subtitle,
       description,
+      result,
     } = req.body;
 
     const existsTitle = await Action.findOne({ title });
@@ -52,11 +56,13 @@ class ActionController {
     }
 
     const category_ref = existCategory._id;
+    const categoryName = existCategory.name;
 
     try {
       const action = await Action.create({
         urlImg,
         category_ref,
+        categoryName,
         fullName,
         institution,
         email,
@@ -67,7 +73,9 @@ class ActionController {
         title,
         subtitle,
         description,
+        result,
       });
+      // await action.populate('category_ref').execPopulate();
 
       await action.save();
 
@@ -115,13 +123,12 @@ class ActionController {
       title: Yup.string(),
       subtitle: Yup.string(),
       description: Yup.string(),
+      result: Yup.string(),
     });
 
     if (!(await schema.isValid(req.body))) {
       return res.status(401).json({ error: 'Validation fails!' });
     }
-    const { title } = req.query;
-    if (!title) return res.status(400).json({ message: 'Title not provided' });
     const titleRefactored = title.replace(/_/gi, ' ');
 
     try {

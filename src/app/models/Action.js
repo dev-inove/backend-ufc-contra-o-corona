@@ -12,16 +12,18 @@ const UserSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: 'Category',
     },
+    categoryName: { type: String },
     fullName: { type: String, required: true },
     institution: { type: String, required: true },
     email: { type: String, required: true },
 
-    initialDate: { type: Date },
-    finalDate: { type: Date },
+    initialDate: { type: String },
+    finalDate: { type: String },
 
     title: { type: String, required: true, unique: true },
     subtitle: { type: String, required: true },
     description: { type: String, required: true },
+    result: { type: String },
 
     // read: { type: Boolean, required: true },
   },
