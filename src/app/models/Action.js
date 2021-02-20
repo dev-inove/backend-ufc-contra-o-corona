@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 
-const UserSchema = new mongoose.Schema(
+const Schema = new mongoose.Schema(
   {
     // responsible: {
     //   type: mongoose.Types.ObjectId,
@@ -29,14 +29,22 @@ const UserSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: {
+      virtuals: true,
+    },
   }
 );
-UserSchema.plugin(uniqueValidator, {
+
+Schema.plugin(uniqueValidator, {
   type: 'mongoose-unique-validator',
   message: 'Error, expected {PATH} to be unique.',
 });
 
-module.exports = mongoose.model('Action', UserSchema);
+Schema.virtual('url').get(function () {
+  return `http://localhost:3333/files/${this.urlImg}`;
+});
+
+module.exports = mongoose.model('Action', Schema);
 
 // const Sequelize = require('sequelize');
 // const { Model } = Sequelize;
