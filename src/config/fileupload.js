@@ -17,9 +17,7 @@ const upload = multer({
   storage: storageEngine,
   fileFilter: (req, file, callback) => {
     const fileExtention = path.extname(file.originalname);
-    if (fileExtention !== '.png') {
-      return callback(new Error('Only images or pdf files are allowed'));
-    }
+
     return callback(null, true);
   },
   limits: {
