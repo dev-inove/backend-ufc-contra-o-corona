@@ -11,8 +11,8 @@ class ActionController {
       institution: Yup.string().required(),
       email: Yup.string().required(),
 
-      initialDate: Yup.date(),
-      finalDate: Yup.date(),
+      initialDate: Yup.string(),
+      finalDate: Yup.string(),
 
       title: Yup.string().required(),
       subtitle: Yup.string().required(),
