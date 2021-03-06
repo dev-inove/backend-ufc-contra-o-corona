@@ -173,6 +173,29 @@ class ActionController {
       return res.status(400).json({ error: 'Action not founded!' });
     }
   }
+
+  async numberDocsWithResult(req, res) {
+    try {
+      const allActions = await Action.countDocuments();
+
+      const allCategories = await Category.countDocuments();
+
+      const empty = await Action.find({ result: '' });
+
+      const result = allActions - empty.length;
+
+      return res.status(200).json({
+        message: 'Done',
+        allActions: allActions,
+        actionsDone: result,
+        allCategories: allCategories,
+      });
+    } catch (error) {
+      return res.status(400).json({
+        message: 'Not a number',
+      });
+    }
+  }
 }
 
 module.exports = new ActionController();

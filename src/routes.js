@@ -32,6 +32,7 @@ routes.get('/action', ActionController.show);
 routes.get('/actions', ActionController.index);
 routes.put('/actions', ActionController.update);
 routes.delete('/actions', ActionController.destroy);
+routes.get('/infos', ActionController.numberDocsWithResult);
 
 routes.post('/category', CategoryController.store);
 routes.get('/category', CategoryController.show);
