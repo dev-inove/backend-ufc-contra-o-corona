@@ -1,5 +1,6 @@
 const Category = require('../models/Category');
 const User = require('../models/User');
+const Action = require('../models/Action');
 const Yup = require('yup');
 
 class CategoryController {
@@ -98,6 +99,31 @@ class CategoryController {
     await category.remove();
 
     return res.status(204).json({ message: 'success' });
+  }
+
+  async NumberDoneCategory(req, res) {
+    try {
+      const categories = await Category.find({}, ['name']);
+      const namesCategories = categories.map((e) => e.name);
+
+      let data = [];
+
+      for (let i = 0; i < namesCategories.length; i++) {
+        const quantity = await Action.find({
+          categoryName: namesCategories[i],
+        });
+
+        data.push({
+          name: namesCategories[i],
+          numberActions: quantity.length,
+        });
+      }
+
+      return res.status(200).json(data);
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json({ Message: 'error' });
+    }
   }
 }
 

@@ -39,6 +39,7 @@ routes.get('/category', CategoryController.show);
 routes.get('/categories', CategoryController.index);
 routes.put('/category', CategoryController.update);
 routes.delete('/category', CategoryController.destroy);
+routes.get('/category-infos', CategoryController.NumberDoneCategory);
 
 routes.get('/users', UserController.index);
 routes.get('/users/:id', UserController.show);
